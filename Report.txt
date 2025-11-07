@@ -1,0 +1,67 @@
+Wine Quality Model Interpretation and Business Impact Report
+Author: Peter Okonmah
+Date: November 7, 2025
+=======================
+-----------------------------------------------------
+1. Approach — From Data Cleaning to Model Deployment
+-----------------------------------------------------
+The dataset winequality-white.csv from the UCI repository contained 4898 records and 12 columns representing chemical properties and wine quality scores.
+Data Cleaning:
+No missing values were found across columns.
+937 duplicate rows were detected and removed, resulting in 3961 unique records.
+All features were numeric (float64), and quality was an integer, so no type corrections were necessary.
+Data Preparation and Encoding:
+The quality column (ranging from 3 to 9) was mapped into four categorical classes:
+9–8 → Best
+7–6 → Good
+5 → Average
+4–3 → Bad
+The dataset was split into features (X) and target (y) and further divided into training and testing sets (80/20 split). All numeric features were scaled using StandardScaler to normalize values.
+Model Development:
+Several models were trained and evaluated — Logistic Regression, Decision Tree, Random Forest, K-Nearest Neighbors (KNN), Support Vector Machine (SVM), and Gradient Boosting. Based on the overall performance metrics (accuracy, precision, recall, and F1-score), Gradient Boosting emerged as the best-performing model.
+Optimization & Deployment:
+The Gradient Boosting model was fine-tuned using RandomizedSearchCV, which slightly improved performance. The final optimized model and scaler were saved as model.pkl and scaler.pkl using joblib.
+A FastAPI application (main.py) was built to serve predictions via two endpoints:
+GET / — welcome message
+POST /predict — accepts wine features and returns a predicted quality class.
+
+-----------------------------------------------
+2. Model Performance Metrics and Interpretation
+-----------------------------------------------
+The final Gradient Boosting model achieved the following approximate metrics on the test set:
+Metric	Score
+Accuracy	0.87
+Precision	0.81
+Recall	0.76
+F1-Score	0.79
+Accuracy (87%) indicates the model correctly classifies most wines.
+Precision (81%) shows that when the model predicts a wine as “Good” or “Best,” it is correct 81% of the time — demonstrating reliability in identifying high-quality wines.
+Recall (76%) means the model successfully captures about three-quarters of truly good wines, showing a balanced sensitivity.
+F1-Score (79%) balances precision and recall, indicating consistent overall performance.
+The confusion matrix revealed that the model performs best on Good and Best categories, with a few misclassifications between “Average” and “Good.” This suggests the model is slightly more precise for high-quality wines, which is beneficial for premium wine identification.
+
+----------------------------------------
+3. Key Features Influencing Wine Quality
+----------------------------------------
+Feature importance from the Gradient Boosting model identified the top contributors to wine quality:
+Alcohol — higher alcohol levels correlate with higher quality ratings.
+Density — lower density often indicates better fermentation and purity.
+Total Sulfur Dioxide — moderate levels improve preservation, but excess reduces sensory quality.
+Volatile Acidity — higher values negatively affect quality (vinegar-like aroma).
+Sulphates — positively associated with stability and taste enhancement.
+These features are consistent with enological knowledge: balanced acidity, proper sulfur control, and fermentation quality are key to premium wines.
+4. Business Insights and Impact
+The model provides actionable intelligence to help wine producers enhance production quality and profitability:
+Improve Production Consistency:
+Monitoring and controlling alcohol and density during fermentation ensures more consistent “Good” or “Best” wines, reducing variability between batches.
+Optimize Chemical Use:
+Insights on sulfur dioxide and volatile acidity allow producers to adjust dosages precisely, preventing spoilage while maintaining flavor quality.
+Quality Segmentation and Pricing:
+Predictions can be used to segment wines into pricing categories — for example, label “Best” wines as premium products, while “Average” or “Bad” wines can be blended or sold at lower tiers.
+Resource Allocation:
+Producers can focus testing and quality-control resources on the most influential features, reducing unnecessary lab costs and improving efficiency.
+Overall, the model enables data-driven production and marketing decisions, helping wineries maintain brand reputation, minimize waste, and increase profit margins through consistent high-quality output.
+---------------
+5. Conclusion
+-------------
+This project successfully delivered a complete machine learning pipeline — from data cleaning to deployment. The optimized Gradient Boosting model provides reliable predictions and interpretable insights that align with real-world winemaking principles. By integrating this model into production processes, wine producers can improve product quality, optimize pricing strategies, and achieve sustainable business growth.
